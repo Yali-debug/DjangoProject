@@ -1,92 +1,80 @@
-from rest_framework import serializers
+from rest_framework.serializers import ModelSerializer
 from gestion_articles.models import *
 
-class UtilisateurSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Utilisateur
-        fields = ['id', 'user', 'nom', 'prenom', 'age', 'adresse']
-
-class ArticleSerializer(serializers.ModelSerializer):
-    auteur = UtilisateurSerializer(read_only=True)
-    likes_count = serializers.SerializerMethodField()
-    comments_count = serializers.SerializerMethodField()
+class CentreInteretSerializer(ModelSerializer):
+    """
+    Serializer for the CentreInteret model.
+    This serializer converts CentreInteret instances to JSON and vice versa.
+    """
     
     class Meta:
-        model = Article
-        fields = '__all__'
-        read_only_fields = ('date_publication',)
-    
-    def get_likes_count(self, obj):
-        return obj.like_set.count()
-    
-    def get_comments_count(self, obj):
-        return obj.commentaire_set.count()
+        model = CentreInteret
+        fields = '__all__'  # Serialize all fields of the CentreInteret model
+        read_only_fields = ['id']  # Make 'id' field read-only
 
-class CategorieSerializer(serializers.ModelSerializer):
+class CategorieSerializer(ModelSerializer):
+    """
+    Serializer for the Categorie model.
+    This serializer converts Categorie instances to JSON and vice versa.
+    """
+    
     class Meta:
         model = Categorie
-        fields = '__all__'
+        fields = '__all__'  # Serialize all fields of the Categorie model
+        read_only_fields = ['id']  # Make 'id' field read-only
 
-
-class SousCategorieSerializer(serializers.ModelSerializer):
-    categorie = CategorieSerializer(read_only=True)
+class SousCategorieSerializer(ModelSerializer):
+    """
+    Serializer for the SousCategorie model.
+    This serializer converts SousCategorie instances to JSON and vice versa.
+    """
     
     class Meta:
         model = SousCategorie
-        fields = '__all__'
+        fields = '__all__'  # Serialize all fields of the SousCategorie model
+        read_only_fields = ['id']  # Make 'id' field read-only
 
 
-
-class CentreInteretSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CentreInteret
-        fields = '__all__'
-
-
-
-class AbonnementSerializer(serializers.ModelSerializer):
-    utilisateur = UtilisateurSerializer(read_only=True)
-    centre_interet = CentreInteretSerializer(read_only=True)
+class UtilisateurSerializer(ModelSerializer):
+    """
+    Serializer for the Utilisateur model.
+    This serializer converts Utilisateur instances to JSON and vice versa.
+    """
     
     class Meta:
-        model = Abonnement
-        fields = '__all__'
+        model = Utilisateur
+        fields = '__all__'  # Serialize all fields of the Utilisateur model
+        read_only_fields = ['id', 'user']  # Make 'id' and 'user' fields read-only
 
-class ConsulteSerializer(serializers.ModelSerializer):
-    utilisateur = UtilisateurSerializer(read_only=True)
-    article = ArticleSerializer(read_only=True)
+class ArticleSerializer(ModelSerializer):
+    """
+    Serializer for the Article model.
+    This serializer converts Article instances to JSON and vice versa.
+    """
+    
+    class Meta:
+        model = Article
+        fields = '__all__'  # Serialize all fields of the Article model
+        read_only_fields = ['id', 'datePub', 'auteur']  # Make 'id', 'datePub', and 'auteur' fields read-only
+
+class ConsulteSerializer(ModelSerializer):
+    """
+    Serializer for the Consulte model.
+    This serializer converts Consulte instances to JSON and vice versa.
+    """
     
     class Meta:
         model = Consulte
-        fields = '__all__'
-        read_only_fields = ('date_consultation',)
-
-
-
-class LikeSerializer(serializers.ModelSerializer):
-    utilisateur = UtilisateurSerializer(read_only=True)
-    article = ArticleSerializer(read_only=True)
+        fields = '__all__'  # Serialize all fields of the Consulte model
+        read_only_fields = ['id', 'date_consultation', 'utilisateur', 'article']  # Make 'id', 'date_consultation', 'utilisateur', and 'article' fields read-only
+        
+class AbonnementSerializer(ModelSerializer):
+    """
+    Serializer for the Abonnement model.
+    This serializer converts Abonnement instances to JSON and vice versa.
+    """
     
     class Meta:
-        model = Like
-        fields = '__all__'
-        read_only_fields = ('date_like',)
-        extra_kwargs = {
-            'utilisateur': {'required': False},
-            'article': {'required': False}
-        }
-
-
-
-class CommentaireSerializer(serializers.ModelSerializer):
-    utilisateur = UtilisateurSerializer(read_only=True)
-    article = ArticleSerializer(read_only=True)
-    
-    class Meta:
-        model = Commentaire
-        fields = '__all__'
-        read_only_fields = ('date_commentaire',)
-        extra_kwargs = {
-            'utilisateur': {'required': False},
-            'article': {'required': False}
-        }
+        model = Abonnement
+        fields = '__all__'  # Serialize all fields of the Abonnement model
+        read_only_fields = ['id', 'date_abonnement', 'utilisateur', 'centre_interet']  # Make 'id', 'date_abonnement', 'utilisateur', and 'centre_interet' fields read-only

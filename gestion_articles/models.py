@@ -65,27 +65,3 @@ class Consulte(models.Model):
         ordering = ['-date_consultation']
         verbose_name = "Consultation"
         verbose_name_plural = "Consultations"
-
-class Like(models.Model):
-    utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE)
-    article = models.ForeignKey(Article, on_delete=models.CASCADE)
-    date_like = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        unique_together = ('utilisateur', 'article')  # Un like unique par utilisateur
-
-
-class Commentaire(models.Model):
-    utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE)
-    article = models.ForeignKey(Article, on_delete=models.CASCADE)
-    contenu = models.TextField()
-    date_commentaire = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        ordering = ['-date_commentaire']
-        verbose_name = "Commentaire"
-        verbose_name_plural = "Commentaires"
-
-    def __str__(self):
-        return f"{self.utilisateur} a commenté {self.article}"
-    
