@@ -18,6 +18,8 @@ Including another URLconf
 # --- Imports principaux ---
 from django.contrib import admin
 from django.urls import path, include
+from django.conf.urls.static import static
+from django.conf import settings
 
 
 # --- Définition des routes du projet ---
@@ -27,7 +29,7 @@ urlpatterns = [
     # Authentification DRF
     path('api-auth/', include('rest_framework.urls')),
     path('api/', include('api_MyApp.urls')),  # Routes de l'application MyApp
-    
 
-]
+
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)  # Pour servir les fichiers médias en mode développement
 
