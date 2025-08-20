@@ -1,8 +1,5 @@
 from rest_framework import viewsets, permissions, status
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from django.db.models import Count, Q
-from gestion_articles.models import CentreInteret, Categorie, SousCategorie, Utilisateur, Article, Consulte
+from gestion_articles.models import *
 from .serializers import *
 
 class CentreInteretViewSet(viewsets.ModelViewSet):
