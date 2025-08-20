@@ -2,10 +2,12 @@ from rest_framework import viewsets, permissions, status
 from gestion_articles.models import *
 from .serializers import *
 
-class CentreInteretViewSet(viewsets.ModelViewSet):
-    queryset = CentreInteret.objects.all()
+class CentreInteretViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = CentreInteretSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    
+    def get_queryset(self):
+        return CentreInteret.objects.all()
 
 class CategorieViewSet(viewsets.ModelViewSet):
     queryset = Categorie.objects.all()
@@ -18,9 +20,9 @@ class SousCategorieViewSet(viewsets.ModelViewSet):
     
     def get_queryset(self):
         queryset = SousCategorie.objects.all()
-        categorie_id = self.request.query_params.get('categorie_id')
+        categorie_id = self.request.query_params.get('categories_id')
         if categorie_id:
-            queryset = queryset.filter(categorie_id=categorie_id)
+            queryset = queryset.filter(categories_id=categorie_id)
         return queryset
 
 class UtilisateurViewSet(viewsets.ModelViewSet):
@@ -40,14 +42,14 @@ class ArticleViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Article.objects.all()
         sous_categorie_id = self.request.query_params.get('sous_categorie_id')
-        if sous_categorie_id:
+        if sous_categorie_id is not None:
             queryset = queryset.filter(sous_categorie_id=sous_categorie_id)
         return queryset
 
 class ConsulteViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ConsulteSerializer
     permission_classes = [permissions.IsAuthenticated]
-    
+
     def get_queryset(self):
         return Consulte.objects.filter(utilisateur__user=self.request.user).select_related('article')
 

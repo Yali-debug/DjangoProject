@@ -2,9 +2,9 @@ from rest_framework.routers import DefaultRouter
 from .views import *
 
 router = DefaultRouter()
-router.register(r'centres_interet', CentreInteretViewSet, basename='centre_interet')
-router.register(r'categories', CategorieViewSet, basename='categorie')
-router.register(r'sous_categories', SousCategorieViewSet, basename='sous_categorie')
-router.register(r'utilisateurs', UtilisateurViewSet, basename='utilisateur')
-router.register(r'articles', ArticleViewSet, basename='article')
+router.register(r'centre_interet', CentreInteretViewSet, basename='centre_interet')
+router.register(r'categorie', CategorieViewSet, basename='categorie')
+router.register(r'sous_categorie', SousCategorieViewSet, basename='sous_categorie')
+router.register(r'utilisateur', UtilisateurViewSet, basename='utilisateur')
+router.register(r'article', ArticleViewSet, basename='article')
 urlpatterns = router.urls
