@@ -48,7 +48,7 @@ class Article(models.Model):
 
     #l'auteur est supprimé, l'article est conservé avec auteur=null
     auteur = models.ForeignKey(Utilisateur, on_delete=models.SET_NULL, null=True, blank=True)
-    sous_categorie = models.ForeignKey(SousCategorie, on_delete=models.PROTECT)
+    sous_categorie = models.ForeignKey(SousCategorie, on_delete=models.PROTECT, related_name="articles")
 
     
     def __str__(self):
