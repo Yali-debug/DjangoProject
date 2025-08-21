@@ -25,6 +25,10 @@ class Abonnement(models.Model):
     utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE)
     centre_interet = models.ForeignKey(CentreInteret, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return f"{self.utilisateur} - {self.centre_interet}"
+
+
 class Categorie(models.Model):
     libelle = models.CharField(max_length=100)
     est_public = models.BooleanField(default=True)
@@ -52,8 +56,11 @@ class Article(models.Model):
 
     
     def __str__(self):
-        return self.titre
-
+        return f"{self.titre} ({self.sous_categorie})"
+    
+    @property
+    def like_count(self):
+        return self.likes.count()
 
 class Consulte(models.Model):
     utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE)
@@ -65,3 +72,27 @@ class Consulte(models.Model):
         ordering = ['-date_consultation']
         verbose_name = "Consultation"
         verbose_name_plural = "Consultations"
+
+class Like(models.Model):
+    utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE)
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='likes')
+    date_like = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        unique_together = ('utilisateur', 'article')
+        ordering = ['-date_like']
+    
+    def __str__(self):
+        return f"{self.utilisateur} liked {self.article}"
+    
+class Commentaire(models.Model):
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='commentaires')
+    utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE)
+    contenu = models.TextField()
+    date_commentaire = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-date_commentaire']
+    
+    def __str__(self):
+        return f"{self.utilisateur} commented on {self.article}: {self.contenu[:20]}"

@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from gestion_articles.models import *
-from .serializers import *
 
 class CentreInteretSerializer(serializers.ModelSerializer):
     """
@@ -11,7 +10,18 @@ class CentreInteretSerializer(serializers.ModelSerializer):
     class Meta:
         model = CentreInteret
         fields = '__all__'  # Serialize all fields of the CentreInteret model
-        read_only_fields = ['id']  # Make 'id' field read-only
+
+class UtilisateurSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the Utilisateur model.
+    This serializer converts Utilisateur instances to JSON and vice versa.
+    """
+    centres_interet = CentreInteretSerializer(many=True, read_only=True)
+    
+    class Meta:
+        model = Utilisateur
+        fields = ['id','nom','prenom', 'adresse', 'age', 'user', 'centres_interet']# Serialize all fields of the Utilisateur model
+
 
 class CategorieSerializer(serializers.ModelSerializer):
     """
@@ -21,43 +31,39 @@ class CategorieSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Categorie
-        fields = '__all__'  # Serialize all fields of the Categorie model
-        read_only_fields = ['id']  # Make 'id' field read-only
+        fields = '__all__'
+          # Serialize all fields of the Categorie model
 
-class SousCategorieSerializer(serializers.ModelSerializer):
+class LikeSerializer(serializers.ModelSerializer):
     """
-    Serializer for the SousCategorie model.
-    This serializer converts SousCategorie instances to JSON and vice versa.
-    """
-    articles = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
-    
-    class Meta:
-        model = SousCategorie
-        fields = '__all__'  # Serialize all fields of the SousCategorie model
-        read_only_fields = ['id']  # Make 'id' field read-only
-
-
-class UtilisateurSerializer(serializers.ModelSerializer):
-    """
-    Serializer for the Utilisateur model.
-    This serializer converts Utilisateur instances to JSON and vice versa.
+    Serializer for the Like model.
+    This serializer converts Like instances to JSON and vice versa.
     """
     
     class Meta:
-        model = Utilisateur
-        fields = '__all__'  # Serialize all fields of the Utilisateur model
-        read_only_fields = ['id', 'user']  # Make 'id' and 'user' fields read-only
+        model = Like
+        fields = '__all__'  # Serialize all fields of the Like model
 
 class ArticleSerializer(serializers.ModelSerializer):
     """
     Serializer for the Article model.
     This serializer converts Article instances to JSON and vice versa.
     """
-    
     class Meta:
         model = Article
         fields = '__all__'  # Serialize all fields of the Article model
-        read_only_fields = ['id', 'datePub', 'auteur']  # Make 'id', 'datePub', and 'auteur' fields read-only
+
+class SousCategorieSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the SousCategorie model.
+    This serializer converts SousCategorie instances to JSON and vice versa.
+    """
+    
+    class Meta:
+        model = SousCategorie
+        fields = '__all__'  # Serialize all fields of the SousCategorie model
+
+
 
 class ConsulteSerializer(serializers.ModelSerializer):
     """
@@ -68,7 +74,6 @@ class ConsulteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Consulte
         fields = '__all__'  # Serialize all fields of the Consulte model
-        read_only_fields = ['id', 'date_consultation', 'utilisateur', 'article']  # Make 'id', 'date_consultation', 'utilisateur', and 'article' fields read-only
         
 class AbonnementSerializer(serializers.ModelSerializer):
     """
@@ -79,4 +84,13 @@ class AbonnementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Abonnement
         fields = '__all__'  # Serialize all fields of the Abonnement model
-        read_only_fields = ['id', 'date_abonnement', 'utilisateur', 'centre_interet']  # Make 'id', 'date_abonnement', 'utilisateur', and 'centre_interet' fields read-only
+
+class LikeSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the Like model.
+    This serializer converts Like instances to JSON and vice versa.
+    """
+    
+    class Meta:
+        model = Like
+        fields = '__all__'  # Serialize all fields of the Like model
