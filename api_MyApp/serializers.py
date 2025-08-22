@@ -16,11 +16,12 @@ class UtilisateurSerializer(serializers.ModelSerializer):
     Serializer for the Utilisateur model.
     This serializer converts Utilisateur instances to JSON and vice versa.
     """
-    centres_interet = CentreInteretSerializer(many=True, read_only=True)
+   #centres_interet = CentreInteretSerializer(many=True, read_only=True)
     
     class Meta:
         model = Utilisateur
-        fields = ['id','nom','prenom', 'adresse', 'age', 'user', 'centres_interet']# Serialize all fields of the Utilisateur model
+        fields = '__all__'
+       #fields = ['id','nom','prenom', 'adresse', 'age', 'user', 'centres_interet']# Serialize all fields of the Utilisateur model
 
 
 class CategorieSerializer(serializers.ModelSerializer):
@@ -58,6 +59,7 @@ class SousCategorieSerializer(serializers.ModelSerializer):
     Serializer for the SousCategorie model.
     This serializer converts SousCategorie instances to JSON and vice versa.
     """
+    articles = ArticleSerializer(many=True, read_only=True)
     
     class Meta:
         model = SousCategorie

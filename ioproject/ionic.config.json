@@ -1,0 +1,7 @@
+{
+  "name": "ioproject",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular-standalone"
+}

@@ -1,7 +1,6 @@
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
 from gestion_articles.models import *
 from .serializers import *
 
@@ -14,14 +13,15 @@ class CentreInteretViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class CategorieViewSet(viewsets.ModelViewSet):
-    queryset = Categorie.objects.all()
     serializer_class = CategorieSerializer
     permission_classes = [permissions.IsAuthenticated]
-
+    def get_queryset(self):
+        return Categorie.objects.all()
+    
 
 class SousCategorieViewSet(viewsets.ModelViewSet):
     serializer_class = SousCategorieSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     
     def get_queryset(self):
         queryset = SousCategorie.objects.all()
@@ -33,7 +33,7 @@ class SousCategorieViewSet(viewsets.ModelViewSet):
 
 class UtilisateurViewSet(viewsets.ModelViewSet):
     serializer_class = UtilisateurSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     
     def get_queryset(self):
         # Les utilisateurs ne peuvent voir que leur propre profil en détail
@@ -47,6 +47,7 @@ class ArticleViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
+        # get all articles or filter by sous_categorie_id if provided
         queryset = Article.objects.all()
         sous_categorie_id = self.request.query_params.get('sous_categorie_id')
         if sous_categorie_id is not None:
