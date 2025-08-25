@@ -1,0 +1,7 @@
+{
+  "name": "IoFront",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}

@@ -14,25 +14,13 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-
-# --- Imports principaux ---
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-
-# --- Définition des routes du projet ---
 urlpatterns = [
-    # Administration Django
     path('admin/', admin.site.urls),
-    # Authentification DRF
     path('api-auth/', include('rest_framework.urls')),
-    path('api/', include('api_MyApp.urls')),  # Routes de l'application MyApp
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),  # Routes pour JWT
-    path('api/token/refresh/', TokenRefreshView.as_view(), name="token_refresh"),  # Routes pour le rafraîchissement du token
-
-
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)  # Pour servir les fichiers médias en mode développement
-
+    path('api/', include('myApi.urls')),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) 
