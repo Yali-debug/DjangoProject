@@ -1,5 +1,4 @@
-import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { ApiService } from '../service/api';
 
 @Component({
@@ -10,7 +9,12 @@ import { ApiService } from '../service/api';
 })
 export class HomePage {
   article : any = []
-  constructor(private apiService: ApiService) {
+  constructor(private apiService: ApiService) {}
+  ngOnInit (): void {
+    this.getArticles();
+  }
+
+  getArticles(): void {
     this.apiService.getArticles().subscribe ((data) => {
       this.article = data;
       console.log(this.article);

@@ -2,8 +2,8 @@ export interface Article {
     id: number;
     titre: string;
     contenu: string;
-    image: string;
-    date_publication: string;
+    illustration: string;
+    date_pub: string;
     auteur: {
         id: number;
         username: string;

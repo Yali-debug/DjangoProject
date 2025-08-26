@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient} from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Article } from './article';
@@ -9,7 +9,7 @@ import { Article } from './article';
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrl = 'http://127.0.0.1:8000/api';  //  URL Django
+  private apiUrl = 'http://127.0.0.1:8000/api';  //  URL API
 
   constructor(private http: HttpClient) { }
 

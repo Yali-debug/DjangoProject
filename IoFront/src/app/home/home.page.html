@@ -9,8 +9,8 @@
 <ion-content [fullscreen]="true">
   <ion-list>
     <ion-item *ngFor="let article of article" [routerLink]="['/article', article.id]">
-      <ion-thumbnail slot="start" *ngIf="article.image">
-        <img [src]="article.image" [alt]="article.titre">
+      <ion-thumbnail slot="start" *ngIf="article.illustration">
+        <img [src]="article.illustration" [alt]="article.titre">
       </ion-thumbnail>
       
       <ion-label>
@@ -18,8 +18,8 @@
         <p>{{ article.contenu | slice:0:100 }}...</p>
         <p class="metadata">
           <small>
-            Par {{ article.auteur.username }} • 
-            {{ article.date_publication | date:'dd/MM/yyyy HH:mm' }}
+            Par {{ article.auteur.nom}} {{article.auteur.prenom}} ~
+            {{ article.date_pub | date:'dd/MM/yyyy HH:mm' }}
           </small>
         </p>
       </ion-label>

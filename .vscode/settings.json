@@ -1,6 +1,7 @@
 {
     "cSpell.words": [
         "Abonnement",
+        "abonnements",
         "adresse",
         "avec",
         "Categorie",
@@ -12,9 +13,11 @@
         "hefrom",
         "Interet",
         "libelle",
+        "peuvent",
         "prenom",
         "requis",
         "Utilisateur",
+        "utilisateurs",
         "viewsets"
     ]
 }

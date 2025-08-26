@@ -8,28 +8,19 @@ from .serializers import *
 class CentreInteretViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = CentreInteretSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    
-    def get_queryset(self):
-        return CentreInteret.objects.all()
+    query = CentreInteret.objects.all()
 
 
 class CategorieViewSet(viewsets.ModelViewSet):
     serializer_class = CategorieSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    def get_queryset(self):
-        return Categorie.objects.all()
+    query = Categorie.objects.all()
     
 
 class SousCategorieViewSet(viewsets.ModelViewSet):
     serializer_class = SousCategorieSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    
-    def get_queryset(self):
-        queryset = SousCategorie.objects.all()
-        """categorie_id = self.request.query_params.get('categories_id')
-        if categorie_id:
-            queryset = queryset.filter(categories_id=categorie_id)
-        return queryset"""
+    queryset = SousCategorie.objects.all()
 
 
 class UtilisateurViewSet(viewsets.ModelViewSet):
