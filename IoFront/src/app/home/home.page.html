@@ -1,28 +1,113 @@
-<ion-header [translucent]="true">
+<ion-header [translucent]="true" class = "custom-header">
   <ion-toolbar>
     <ion-title>
-      Articles de Presse
+      Article de presse
     </ion-title>
+    <ion-buttons slot="start" *ngIf="modeDetail">
+      <ion-button (click)="retourListe()">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-list>
-    <ion-item *ngFor="let article of article" [routerLink]="['/article', article.id]">
-      <ion-thumbnail slot="start" *ngIf="article.illustration">
-        <img [src]="article.illustration" [alt]="article.titre">
-      </ion-thumbnail>
+  <!-- Mode Liste des articles -->
+  <div *ngIf="!modeDetail">
+    <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+      <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>
+    <div *ngIf="articles.length > 0">
       
-      <ion-label>
-        <h2>{{ article.titre }}</h2>
-        <p>{{ article.contenu | slice:0:100 }}...</p>
-        <p class="metadata">
+      <!-- Swiper des articles en vedette -->
+      <div class="featured-section" *ngIf="featuredArticles.length > 0">
+        <h2 class="section-title">À la une</h2>
+        <div class="swiper featured-swiper" #featuredSwiper>
+          <div class="swiper-wrapper">
+            <div class="swiper-slide featured-slide" *ngFor="let article of featuredArticles" 
+                 (click)="getDetail(article)">
+              <div class="featured-image" [style.backgroundImage]="'url(' + (article.illustration || 'assets/default-news.jpg') + ')'">
+                <div class="featured-overlay">
+                  <h3 class="featured-title">{{ article.titre }}</h3>
+                  <p class="featured-excerpt">{{ article.contenu | slice:0:120 }}...</p>
+                  <div class="featured-meta">
+                    <span class="featured-author">{{article.auteur.nom }}</span>
+                    <span class="featured-date">{{article.date_pub | date:'dd/MM/yyyy HH:mm'}}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="swiper-pagination"></div>
+        </div>
+      </div>
+
+        
+      <!-- Swiper des articles normaux -->
+      <div class="articles-section">
+        <h2 class="section-title">Tous les articles</h2>
+        <div class="swiper articles-swiper" #swiperContainer>
+          <div class="swiper-wrapper">
+            <div class="swiper-slide article-slide" *ngFor="let article of articles" 
+                (click)="getDetail(article)">
+              
+              <ion-card class="article-card">
+                <img *ngIf="article.illustration" [src]="article.illustration" [alt]="article.titre" class="article-image">
+                
+                <ion-card-header>
+                  <ion-card-title class="article-card-title">{{ article.titre }}</ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                  <p class="article-excerpt">{{ article.contenu | slice:0:80 }}...</p>
+                    <div class="article-info">
+                      <span class="article-author">{{ article.auteur.nom }}</span>
+                      <span class="article-date">{{ article.date_pub | date:'dd/MM/yyyy HH:mm'}}</span>
+                    </div>
+                </ion-card-content>
+              </ion-card>
+
+            </div>
+          </div>
+          <!-- Navigation -->
+          <div class="swiper-button-next"></div>
+          <div class="swiper-button-prev"></div>
+          <div class="swiper-pagination"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mode Détail de l'article -->
+  <div *ngIf="modeDetail && articleSelectionne" class="detail-container">
+    <ion-card>
+      <!-- Image de l'article -->
+      <img *ngIf="articleSelectionne.illustration" 
+           [src]="articleSelectionne.illustration" 
+           [alt]="articleSelectionne.titre"
+           class="detail-image">
+      
+      <ion-card-header>
+        <ion-card-title>{{ articleSelectionne.titre }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div [innerHTML]="articleSelectionne.contenu" class="contenu-article"></div>
+        <div class="detail-auteur">
           <small>
-            Par {{ article.auteur.nom}} {{article.auteur.prenom}} ~
-            {{ article.date_pub | date:'dd/MM/yyyy HH:mm' }}
+            <div class="detail-auteur-info">
+              <p>{{ articleSelectionne.auteur.nom}} {{ articleSelectionne.auteur.prenom}}
+              {{articleSelectionne.date_pub | date:'dd/MM/yyyy HH:mm'}}</p>
+            </div>
           </small>
-        </p>
-      </ion-label>
-    </ion-item>
-  </ion-list>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Bouton de retour -->
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+      <ion-fab-button (click)="retourListe()" color="primary">
+        <ion-icon name="list"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+  </div>
+
 </ion-content>
