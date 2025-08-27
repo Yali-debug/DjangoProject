@@ -1,31 +1,3 @@
-#container {
-  text-align: center;
-
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-#container strong {
-  font-size: 20px;
-  line-height: 26px;
-}
-
-#container p {
-  font-size: 16px;
-  line-height: 22px;
-
-  color: #8c8c8c;
-
-  margin: 0;
-}
-
-#container a {
-  text-decoration: none;
-}
-
 .loading, .empty-state {
   display: flex;
   flex-direction: column;
@@ -53,4 +25,23 @@
 ion-thumbnail {
   --size: 80px;
   --border-radius: 8px;
+}
+
+.article-detail {
+  padding: 16px;
+  
+  ion-card {
+    margin: 0;
+    margin-bottom: 20px;
+    
+    img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+  }
+}
+
+.action-buttons {
+  padding: 0 16px;
 }

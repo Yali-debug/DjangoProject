@@ -3,13 +3,14 @@ import { HttpClient} from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Article } from './article';
+import { environment } from 'src/environments/environment';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrl = 'http://127.0.0.1:8000/api';  //  URL API
+  private apiUrl = environment.apiUrL;  //  URL API
 
   constructor(private http: HttpClient) { }
 

@@ -1,28 +1,84 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Articles de Presse
+      {{ viewMode === 'list' ? 'Actualités' : 'Détails' }}
     </ion-title>
+    
+    <ion-buttons slot="start" *ngIf="viewMode === 'detail'">
+      <ion-button (click)="backToList()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-list>
-    <ion-item *ngFor="let article of article" [routerLink]="['/article', article.id]">
-      <ion-thumbnail slot="start" *ngIf="article.illustration">
-        <img [src]="article.illustration" [alt]="article.titre">
-      </ion-thumbnail>
-      
-      <ion-label>
-        <h2>{{ article.titre }}</h2>
-        <p>{{ article.contenu | slice:0:100 }}...</p>
-        <p class="metadata">
-          <small>
-            Par {{ article.auteur.nom}} {{article.auteur.prenom}} ~
-            {{ article.date_pub | date:'dd/MM/yyyy HH:mm' }}
-          </small>
-        </p>
-      </ion-label>
-    </ion-item>
-  </ion-list>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Vue Liste -->
+  <div *ngIf="viewMode === 'list'">
+    <div *ngIf="isLoading" class="loading">
+      <ion-spinner></ion-spinner>
+      <p>Chargement des articles...</p>
+    </div>
+
+    <div *ngIf="!isLoading && articles.length === 0" class="empty-state">
+      <ion-icon name="newspaper-outline"></ion-icon>
+      <p>Aucun article disponible</p>
+    </div>
+
+    <ion-list *ngIf="!isLoading && articles.length > 0">
+      <ion-item *ngFor="let article of articles" (click)="showArticleDetail(article.id)">
+        <ion-thumbnail slot="start" *ngIf="article.illustration">
+          <img [src]="article.illustration" [alt]="article.titre">
+        </ion-thumbnail>
+        
+        <ion-label>
+          <h2>{{ article.titre }}</h2>
+          <p>{{ article.contenu | slice:0:70 }}...</p>
+          <p class="metadata">
+            <small>
+              Par {{ article.auteur.nom }} • 
+              {{ article.date_pub | date:'dd/MM/yyyy' }}
+            </small>
+          </p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <!-- Vue Détail -->
+  <div *ngIf="viewMode === 'detail' && selectedArticle">
+    <div *ngIf="isLoading" class="loading">
+      <ion-spinner></ion-spinner>
+      <p>Chargement de l'article...</p>
+    </div>
+
+    <div *ngIf="!isLoading" class="article-detail">
+      <ion-card>
+        <img *ngIf="selectedArticle.illustration" [src]="selectedArticle.illustration" [alt]="selectedArticle.titre">
+        
+        <ion-card-header>
+          <ion-card-title>{{ selectedArticle.titre }}</ion-card-title>
+          <ion-card-subtitle>
+            Par {{ selectedArticle.auteur.nom }} ~
+            {{ selectedArticle.date_pub | date:'dd/MM/yyyy à HH:mm' }}
+          </ion-card-subtitle>
+        </ion-card-header>
+
+        <ion-card-content>
+          <p>{{ selectedArticle.contenu }}</p>
+        </ion-card-content>
+      </ion-card>
+
+      <div class="action-buttons">
+        <ion-button expand="block" (click)="backToList()">
+          <ion-icon name="arrow-back" slot="start"></ion-icon>
+          Retour à la liste
+        </ion-button>
+      </div>
+    </div>
+  </div>
 </ion-content>

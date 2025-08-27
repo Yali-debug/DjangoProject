@@ -6,8 +6,8 @@ export interface Article {
     date_pub: string;
     auteur: {
         id: number;
-        username: string;
-        first_name: string;
-        last_name: string;
+        nom: string;
+        prenom: string;
+        age: string;
     };
 }
