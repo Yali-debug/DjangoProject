@@ -1,76 +1,99 @@
 import { Component, OnInit } from '@angular/core';
-import { Article } from '../service/article';
-import { ApiService } from '../service/api';
-import { IonHeader, IonToolbar, IonTitle } from "@ionic/angular/standalone";
-import { IonicModule } from '@ionic/angular';
-import { CommonModule } from '@angular/common';
-
+import { Article } from '../models/article';
+import { ArticleService } from '../service/article-service';
+import { AuthService } from '../service/auth-service';
+import { LoadingController, ToastController } from '@ionic/angular';
+import { SousCategorie, Categorie, CentreInteret } from '../models/article';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
-  standalone: false // ← Si vous utilisez des composants standalone
+  standalone: false
 })
 export class HomePage implements OnInit {
   articles: Article[] = [];
-  isLoading = true;
+  sousCategories: SousCategorie[] = [];
+  
   selectedArticle: Article | null = null;
-  viewMode: 'list' | 'detail' = 'list';
+  isArticleDetailVisible = false;
+  isLoading = false;
+  searchTerm = '';
 
+  constructor(
+    private articleService: ArticleService,
+    private authService: AuthService,
+    private loadingCtrl: LoadingController,
+    private toastCtrl: ToastController
+  ) {}
 
-  constructor(private articleService: ApiService) {}
+  async ngOnInit() {
+    await this.loadInitialData();
+    await this.loadArticles();
+  }
 
-  ngOnInit() {
+  async loadInitialData() {
+    try {
+      this.sousCategories = await this.articleService.getSousCategories().toPromise() || [];
+    } catch (error) {
+      console.error('Error loading filter data:', error);
+      this.showToast('Erreur lors du chargement des filtres');
+    }
+  }
+
+  async loadArticles() {
+    this.isLoading = true;
+    const loading = await this.loadingCtrl.create({
+      message: 'Chargement des articles...'
+    });
+    await loading.present();
+
+    try {
+      this.articleService.getArticles(undefined, this.searchTerm).subscribe({
+        next: (articles) => {
+          this.articles = articles;
+          loading.dismiss();
+          this.isLoading = false;
+        },
+        error: (error) => {
+          console.error('Error loading articles:', error);
+          loading.dismiss();
+          this.isLoading = false;
+          this.showToast('Erreur lors du chargement des articles');
+        }
+      });
+    } catch (error) {
+      console.error('Error:', error);
+      loading.dismiss();
+      this.isLoading = false;
+    }
+  }
+
+  onSearchChange(event: any) {
+    this.searchTerm = event.detail.value;
     this.loadArticles();
   }
 
-  loadArticles() {
-    this.isLoading = true;
-    this.articleService.getArticles().subscribe({
-      next: (data) => {
-        this.articles = data;
-        this.isLoading = false;
-      },
-      error: (error) => {
-        console.error('Erreur lors du chargement des articles:', error);
-        this.isLoading = false;
-      }
-    });
+  showArticleDetail(article: Article) {
+    this.selectedArticle = article;
+    this.isArticleDetailVisible = true;
   }
 
-  doRefresh(event: any) {
-    this.articleService.getArticles().subscribe({
-      next: (data) => {
-        this.articles = data;
-        event.target.complete();
-      },
-      error: (error) => {
-        console.error('Erreur:', error);
-        event.target.complete();
-      }
-    });
-  }
-
-    // Afficher les détails d'un article
-  showArticleDetail(articleId: number) {
-    this.isLoading = true;
-    this.articleService.getArticle(articleId).subscribe({
-      next: (article) => {
-        this.selectedArticle = article;
-        this.viewMode = 'detail';
-        this.isLoading = false;
-      },
-      error: (error) => {
-        console.error('Erreur lors du chargement de l\'article:', error);
-        this.isLoading = false;
-      }
-    });
-  }
-
-    // Retour à la liste
-  backToList() {
+  hideArticleDetail() {
+    this.isArticleDetailVisible = false;
     this.selectedArticle = null;
-    this.viewMode = 'list';
+  }
+
+  async logout() {
+    await this.authService.logout();
+  }
+
+  private async showToast(message: string) {
+    const toast = await this.toastCtrl.create({
+      message,
+      duration: 2000,
+      position: 'bottom'
+    });
+    await toast.present();
   }
 }

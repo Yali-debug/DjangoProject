@@ -1,0 +1,88 @@
+:host {
+  --card-bg: #1e293b;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --border-color: #334155;
+}
+
+ion-card {
+  --background: var(--card-bg);
+  margin: 16px;
+  border-radius: 16px;
+}
+
+.article-image {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+}
+
+.article-content {
+  white-space: pre-line;
+  line-height: 1.6;
+  font-size: 16px;
+  color: var(--text-primary);
+  padding: 0 4px;
+}
+
+ion-card-header {
+  padding-bottom: 8px;
+  
+  ion-card-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+  
+  ion-card-subtitle {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+  }
+}
+
+ion-card-content {
+  padding-top: 0;
+}
+
+// Badge dans le détail
+ion-badge {
+  background: linear-gradient(135deg, #2563eb, #8b5cf6);
+  color: white;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-weight: 500;
+  font-size: 12px;
+}
+
+// Like button
+ion-button {
+  --background: transparent;
+  --color: var(--text-secondary);
+  --background-hover: rgba(255, 255, 255, 0.1);
+  margin-top: 16px;
+  
+  ion-icon {
+    font-size: 20px;
+    margin-right: 8px;
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .article-image {
+    height: 200px;
+  }
+  
+  ion-card {
+    margin: 12px;
+  }
+  
+  ion-card-header ion-card-title {
+    font-size: 1.3rem;
+  }
+}

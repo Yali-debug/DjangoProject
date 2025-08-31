@@ -1,84 +1,70 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>
-      {{ viewMode === 'list' ? 'Actualités' : 'Détails' }}
-    </ion-title>
-    
-    <ion-buttons slot="start" *ngIf="viewMode === 'detail'">
-      <ion-button (click)="backToList()">
-        <ion-icon name="arrow-back"></ion-icon>
+    <ion-icon name="newspaper-outline" class="logo-icon"></ion-icon>
+    <ion-title class="gradient-text">PressNews</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="logout()" fill="clear">
+        <ion-icon name="log-out-outline" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
+
+  <ion-toolbar>
+    <ion-searchbar 
+      placeholder="Rechercher des articles..." 
+      (ionInput)="onSearchChange($event)"
+      [value]="searchTerm"
+      animated="true"
+      clear-icon="close-circle"
+      class="custom-searchbar">
+    </ion-searchbar>
+  </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
-    <ion-refresher-content></ion-refresher-content>
-  </ion-refresher>
+<ion-content>
+  <ion-loading 
+    [isOpen]="isLoading" 
+    message="Chargement des articles..."
+    cssClass="custom-loading">
+  </ion-loading>
 
-  <!-- Vue Liste -->
-  <div *ngIf="viewMode === 'list'">
-    <div *ngIf="isLoading" class="loading">
-      <ion-spinner></ion-spinner>
-      <p>Chargement des articles...</p>
-    </div>
+  <!-- Liste des articles -->
+  <div *ngIf="!isArticleDetailVisible" class="articles-container">
+    <app-article-list-component 
+      [articles]="articles"
+      [sousCategories]="sousCategories"
+      (articleSelected)="showArticleDetail($event)">
+    </app-article-list-component>
 
-    <div *ngIf="!isLoading && articles.length === 0" class="empty-state">
+    <!-- Empty state -->
+    <div *ngIf="articles.length === 0 && !isLoading" class="empty-state">
       <ion-icon name="newspaper-outline"></ion-icon>
-      <p>Aucun article disponible</p>
+      <h3>Aucun article trouvé</h3>
+      <p *ngIf="searchTerm">Aucun résultat pour "{{ searchTerm }}"</p>
+      <p *ngIf="!searchTerm">Aucun article disponible pour le moment</p>
+      <ion-button (click)="loadArticles()" fill="solid">
+        <ion-icon name="refresh" slot="start"></ion-icon>
+        Actualiser
+      </ion-button>
     </div>
-
-    <ion-list *ngIf="!isLoading && articles.length > 0">
-      <ion-item *ngFor="let article of articles" (click)="showArticleDetail(article.id)">
-        <ion-thumbnail slot="start" *ngIf="article.illustration">
-          <img [src]="article.illustration" [alt]="article.titre">
-        </ion-thumbnail>
-        
-        <ion-label>
-          <h2>{{ article.titre }}</h2>
-          <p>{{ article.contenu | slice:0:70 }}...</p>
-          <p class="metadata">
-            <small>
-              Par {{ article.auteur.nom }} • 
-              {{ article.date_pub | date:'dd/MM/yyyy' }}
-            </small>
-          </p>
-        </ion-label>
-      </ion-item>
-    </ion-list>
   </div>
 
-  <!-- Vue Détail -->
-  <div *ngIf="viewMode === 'detail' && selectedArticle">
-    <div *ngIf="isLoading" class="loading">
-      <ion-spinner></ion-spinner>
-      <p>Chargement de l'article...</p>
-    </div>
+  <!-- Détail de l'article -->
+  <div *ngIf="isArticleDetailVisible && selectedArticle" class="article-detail">
+    <ion-header collapse="condense">
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button (click)="hideArticleDetail()" fill="clear">
+            <ion-icon name="arrow-back" slot="icon-only"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ selectedArticle.titre | slice:0:30 }}{{ selectedArticle.titre.length > 30 ? '...' : '' }}</ion-title>
+      </ion-toolbar>
+    </ion-header>
 
-    <div *ngIf="!isLoading" class="article-detail">
-      <ion-card>
-        <img *ngIf="selectedArticle.illustration" [src]="selectedArticle.illustration" [alt]="selectedArticle.titre">
-        
-        <ion-card-header>
-          <ion-card-title>{{ selectedArticle.titre }}</ion-card-title>
-          <ion-card-subtitle>
-            Par {{ selectedArticle.auteur.nom }} ~
-            {{ selectedArticle.date_pub | date:'dd/MM/yyyy à HH:mm' }}
-          </ion-card-subtitle>
-        </ion-card-header>
-
-        <ion-card-content>
-          <p>{{ selectedArticle.contenu }}</p>
-        </ion-card-content>
-      </ion-card>
-
-      <div class="action-buttons">
-        <ion-button expand="block" (click)="backToList()">
-          <ion-icon name="arrow-back" slot="start"></ion-icon>
-          Retour à la liste
-        </ion-button>
-      </div>
-    </div>
+    <app-article-detail-component 
+      [article]="selectedArticle"
+      [sousCategories]="sousCategories">
+    </app-article-detail-component>
   </div>
 </ion-content>

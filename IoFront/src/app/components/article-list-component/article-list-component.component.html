@@ -1,0 +1,27 @@
+<ion-list>
+  <ion-item *ngFor="let article of articles" (click)="onArticleClick(article)" button>
+    <ion-thumbnail slot="start">
+      <img [src]="article.illustration_url" [alt]="article.titre" *ngIf="article.illustration_url">
+      <ion-icon name="image-outline" size="large" *ngIf="!article.illustration_url"></ion-icon>
+    </ion-thumbnail>
+    
+    <ion-label>
+      <h2>{{ article.titre }}</h2>
+      <p>{{ article.contenu | slice:0:100 }}...</p>
+      <p>
+        <small>
+          Par {{ article.auteur?.prenom }} {{ article.auteur?.nom }} • 
+          {{ article.date_pub | date:'dd/MM/yyyy à HH:mm' }}
+        </small>
+      </p>
+      <ion-badge *ngIf="article.sous_categorie" color="medium">
+        {{ getSousCategorieName(article.sous_categorie) }}
+      </ion-badge>
+    </ion-label>
+  </ion-item>
+</ion-list>
+
+<div *ngIf="articles.length === 0" class="ion-text-center ion-padding">
+  <ion-icon name="newspaper-outline" size="large"></ion-icon>
+  <p>Aucun article trouvé</p>
+</div>
