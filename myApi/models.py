@@ -6,7 +6,6 @@ from django.contrib.auth.models import User as DjangoUser
 
 class CentreInteret(models.Model):
     libelle = models.CharField(max_length=100)
-    
     def __str__(self):
         return self.libelle
 
@@ -49,11 +48,8 @@ class Article(models.Model):
     contenu = models.TextField()
     illustration = models.ImageField(upload_to='articles/')
     date_pub = models.DateTimeField(auto_now_add=True)
-
-    #l'auteur est supprimé, l'article est conservé avec auteur=null
     auteur = models.ForeignKey(Utilisateur, on_delete=models.SET_NULL, null=True, blank=True)
     sous_categorie = models.ForeignKey(SousCategorie, on_delete=models.PROTECT, related_name="article")
-
     
     def __str__(self):
         return f"{self.titre} ({self.sous_categorie})"

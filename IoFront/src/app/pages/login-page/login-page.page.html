@@ -1,0 +1,195 @@
+<ion-content class="login-content" [fullscreen]="true">
+  <div class="login-container">
+    <!-- Header avec logo -->
+    <div class="login-header">
+      <ion-icon name="newspaper-outline" class="logo-icon"></ion-icon>
+      <h1 class="app-title">PressNews</h1>
+      <p class="app-subtitle">{{ isRegisterMode ? 'Créez votre compte' : 'Connectez-vous à votre compte' }}</p>
+    </div>
+
+    <!-- Toggle login/register -->
+    <div class="auth-toggle">
+      <ion-segment [value]="isRegisterMode ? 'register' : 'login'" (ionChange)="toggleAuthMode($event)">
+        <ion-segment-button value="login">
+          <ion-label>Connexion</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="register">
+          <ion-label>Inscription</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </div>
+
+    <!-- Formulaire de connexion -->
+    <div class="login-form" *ngIf="!isRegisterMode">
+      <form (ngSubmit)="login()" #loginForm="ngForm">
+        <ion-item class="form-item" lines="none">
+          <ion-label position="stacked" class="input-label">Nom d'utilisateur</ion-label>
+          <ion-input 
+            type="text" 
+            [(ngModel)]="loginCredentials.username" 
+            name="loginUsername" 
+            required
+            placeholder="Votre nom d'utilisateur"
+            class="custom-input">
+          </ion-input>
+        </ion-item>
+
+        <ion-item class="form-item" lines="none">
+          <ion-label position="stacked" class="input-label">Mot de passe</ion-label>
+          <ion-input 
+            type="password" 
+            [(ngModel)]="loginCredentials.password" 
+            name="loginPassword" 
+            required
+            placeholder="Votre mot de passe"
+            class="custom-input">
+          </ion-input>
+        </ion-item>
+
+        <ion-button 
+          type="submit" 
+          expand="block" 
+          shape="round" 
+          class="auth-button"
+          [disabled]="!loginForm.valid || isLoading">
+          <ion-spinner *ngIf="isLoading" name="crescent" class="spinner"></ion-spinner>
+          <span *ngIf="!isLoading">Se connecter</span>
+        </ion-button>
+      </form>
+    </div>
+
+    <!-- Formulaire d'inscription -->
+    <div class="login-form" *ngIf="isRegisterMode">
+      <form (ngSubmit)="register()" #registerForm="ngForm">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="6">
+              <ion-item class="form-item" lines="none">
+                <ion-label position="stacked" class="input-label">Prénom</ion-label>
+                <ion-input 
+                  type="text" 
+                  [(ngModel)]="registerData.prenom" 
+                  name="prenom" 
+                  required
+                  placeholder="Votre prénom"
+                  class="custom-input">
+                </ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size="6">
+              <ion-item class="form-item" lines="none">
+                <ion-label position="stacked" class="input-label">Nom</ion-label>
+                <ion-input 
+                  type="text" 
+                  [(ngModel)]="registerData.nom" 
+                  name="nom" 
+                  required
+                  placeholder="Votre nom"
+                  class="custom-input">
+                </ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+
+        <ion-item class="form-item" lines="none">
+          <ion-label position="stacked" class="input-label">Nom d'utilisateur</ion-label>
+          <ion-input 
+            type="text" 
+            [(ngModel)]="registerData.username" 
+            name="username" 
+            required
+            placeholder="Choisissez un nom d'utilisateur"
+            class="custom-input">
+          </ion-input>
+        </ion-item>
+
+        <ion-item class="form-item" lines="none">
+          <ion-label position="stacked" class="input-label">Email</ion-label>
+          <ion-input 
+            type="email" 
+            [(ngModel)]="registerData.email" 
+            name="email" 
+            required
+            placeholder="Votre adresse email"
+            class="custom-input">
+          </ion-input>
+        </ion-item>
+
+        <ion-item class="form-item" lines="none">
+          <ion-label position="stacked" class="input-label">Âge</ion-label>
+          <ion-input 
+            type="number" 
+            [(ngModel)]="registerData.age" 
+            name="age" 
+            required
+            min="13"
+            max="120"
+            placeholder="Votre âge"
+            class="custom-input">
+          </ion-input>
+        </ion-item>
+
+        <ion-item class="form-item" lines="none">
+          <ion-label position="stacked" class="input-label">Adresse</ion-label>
+          <ion-input 
+            type="text" 
+            [(ngModel)]="registerData.adresse" 
+            name="adresse" 
+            required
+            placeholder="Votre adresse"
+            class="custom-input">
+          </ion-input>
+        </ion-item>
+
+        <ion-item class="form-item" lines="none">
+          <ion-label position="stacked" class="input-label">Mot de passe</ion-label>
+          <ion-input 
+            type="password" 
+            [(ngModel)]="registerData.password" 
+            name="password" 
+            required
+            minlength="6"
+            placeholder="Créez un mot de passe"
+            class="custom-input">
+          </ion-input>
+        </ion-item>
+
+        <ion-item class="form-item" lines="none">
+          <ion-label position="stacked" class="input-label">Confirmer le mot de passe</ion-label>
+          <ion-input 
+            type="password" 
+            [(ngModel)]="registerData.confirmPassword" 
+            name="confirmPassword" 
+            required
+            placeholder="Confirmez votre mot de passe"
+            class="custom-input">
+          </ion-input>
+        </ion-item>
+
+        <div class="password-match" *ngIf="registerData.password && registerData.confirmPassword">
+          <ion-icon 
+            [name]="registerData.password === registerData.confirmPassword ? 'checkmark-circle' : 'close-circle'" 
+            [color]="registerData.password === registerData.confirmPassword ? 'success' : 'danger'">
+          </ion-icon>
+          <span>Les mots de passe correspondent</span>
+        </div>
+
+        <ion-button 
+          type="submit" 
+          expand="block" 
+          shape="round" 
+          class="auth-button"
+          [disabled]="!registerForm.valid || isLoading || registerData.password !== registerData.confirmPassword">
+          <ion-spinner *ngIf="isLoading" name="crescent" class="spinner"></ion-spinner>
+          <span *ngIf="!isLoading">Créer mon compte</span>
+        </ion-button>
+      </form>
+    </div>
+
+    <!-- Footer -->
+    <div class="login-footer">
+      <p class="footer-text">© 2024 PressNews</p>
+    </div>
+  </div>
+</ion-content>

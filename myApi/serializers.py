@@ -1,7 +1,9 @@
 
 from rest_framework import serializers
 from .models import *
+from django.contrib.auth.models import User
 
+    
 class CentreInteretSerializer(serializers.ModelSerializer):
     """
     Serializer for the CentreInteret model.
@@ -12,15 +14,48 @@ class CentreInteretSerializer(serializers.ModelSerializer):
         model = CentreInteret
         fields = '__all__'  # Serialize all fields of the CentreInteret model
 
-class UtilisateurSerializer(serializers.ModelSerializer):
-    """
-    Serializer for the Utilisateur model.
-    This serializer converts Utilisateur instances to JSON and vice versa.
-    """
-    
+
+class UtilisateurDetailSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user.username', read_only=True)
+    email = serializers.EmailField(source='user.email', read_only=True)
+
     class Meta:
         model = Utilisateur
-        fields = '__all__'# Serialize all fields of the Utilisateur model
+        fields = ['id', 'nom', 'prenom', 'age', 'adresse', 'username', 'email']
+
+
+class UserRegistrationSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True)
+    nom = serializers.CharField()
+    prenom = serializers.CharField()
+    age = serializers.IntegerField(required=False)
+    adresse = serializers.CharField(required=False, allow_blank=True)
+
+    def create(self, validated_data):
+        nom = validated_data.pop('nom')
+        prenom = validated_data.pop('prenom')
+        age = validated_data.pop('age', None)
+        adresse = validated_data.pop('adresse', '')
+
+        # Création du User
+        user = User.objects.create_user(
+            username=validated_data['username'],
+            email=validated_data['email'],
+            password=validated_data['password']
+        )
+
+        # Création du profil Utilisateur
+        utilisateur = Utilisateur.objects.create(
+            user=user,
+            nom=nom,
+            prenom=prenom,
+            age =age,
+            adresse = adresse
+        )
+
+        return utilisateur  # On retourne le profil pour la réponse
 
 
 class CategorieSerializer(serializers.ModelSerializer):
@@ -45,14 +80,18 @@ class LikeSerializer(serializers.ModelSerializer):
         fields = '__all__'  # Serialize all fields of the Like model
 
 class ArticleSerializer(serializers.ModelSerializer):
-    """
-    Serializer for the Article model.
-    This serializer converts Article instances to JSON and vice versa.
-    """
-    auteur = UtilisateurSerializer(read_only = True)
+    auteur = UtilisateurDetailSerializer(read_only = True)
+    illustration_url = serializers.SerializerMethodField()
+
     class Meta:
         model = Article
-        fields = ['id', 'titre', 'contenu', 'illustration', 'date_pub', 'auteur', 'sous_categorie'] # Serialize all fields of the Article model
+        fields = ['id', 'titre', 'contenu', 'illustration', 'illustration_url', 'date_pub', 'auteur', 'sous_categorie']
+        
+    def get_illustration_url(self, obj):
+        request = self.context.get('request')
+        if obj.illustration and request:
+            return request.build_absolute_uri(obj.illustration.url)
+        return obj.illustration.url if obj.illustration else None
 
 class SousCategorieSerializer(serializers.ModelSerializer):
     """
@@ -77,6 +116,7 @@ class ConsulteSerializer(serializers.ModelSerializer):
         fields = '__all__'  # Serialize all fields of the Consulte model
         
 class AbonnementSerializer(serializers.ModelSerializer):
+    centre_interet = CentreInteretSerializer(read_only =True)
     """
     Serializer for the Abonnement model.
     This serializer converts Abonnement instances to JSON and vice versa.
@@ -84,14 +124,4 @@ class AbonnementSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Abonnement
-        fields = '__all__'  # Serialize all fields of the Abonnement model
-
-class LikeSerializer(serializers.ModelSerializer):
-    """
-    Serializer for the Like model.
-    This serializer converts Like instances to JSON and vice versa.
-    """
-    
-    class Meta:
-        model = Like
-        fields = '__all__'  # Serialize all fields of the Like model
+        fields = ['id', 'utilisateur', 'centre_interet']  # Serialize all fields of the Abonnement model
