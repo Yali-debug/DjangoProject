@@ -14,8 +14,5 @@ export class ArticleDetailComponentComponent {
 
   constructor() {}
 
-  getSousCategorieName(id: number): string {
-    const sousCategorie = this.sousCategories.find(sc => sc.id === id);
-    return sousCategorie ? sousCategorie.libelle : 'Inconnu';
-  }
+
 }

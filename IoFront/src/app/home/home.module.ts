@@ -4,7 +4,7 @@ import { IonicModule } from '@ionic/angular';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HomePage } from './home.page';
 import { HomePageRoutingModule } from './home-routing.module';
-import { ArticleListComponentComponent } from '../components/article-list-component/article-list-component.component';
+import { ArticleListComponentComponent } from '../components/article-list-component/article-list-component';
 import { ArticleDetailComponentComponent } from '../components/article-detail-component/article-detail-component.component';
 @NgModule({
   imports: [

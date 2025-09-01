@@ -8,6 +8,7 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { IonicStorageModule } from '@ionic/storage-angular';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 // import vos service
 @NgModule({
   declarations: [AppComponent],
@@ -16,6 +17,7 @@ import { IonicStorageModule } from '@ionic/storage-angular';
     HttpClientModule,
     AppRoutingModule,
     IonicStorageModule.forRoot()],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },

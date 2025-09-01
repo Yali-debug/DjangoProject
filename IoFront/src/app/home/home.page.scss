@@ -10,6 +10,12 @@
   --border-color: #334155; // Couleur des bordures
 }
 
+.home-header {
+  text-align:left;
+  margin-bottom: 0px;
+  margin-left: 100px;
+}
+
 ion-content {
   --background: var(--dark-bg);
   --color: var(--text-primary);
@@ -225,4 +231,149 @@ ion-card {
   100% {
     background-position: -200% 0;
   }
+}
+
+// Styles pour le Swiper
+.swiper-container {
+  padding: 16px;
+}
+
+.categories-swiper {
+  width: 100%;
+  height: auto;
+}
+
+.category-slide {
+  width: 300px;
+  height: auto;
+}
+
+.category-card {
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 16px;
+  height: 100%;
+  border: 1px solid var(--border-color);
+}
+
+.category-header {
+  margin-bottom: 16px;
+  
+  .category-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 4px 0;
+  }
+  
+  .article-count {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+  }
+}
+
+.articles-swiper {
+  width: 100%;
+  height: 220px;
+}
+
+.article-slide {
+  width: 200px;
+  height: 200px;
+}
+
+.article-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  overflow: hidden;
+  height: 100%;
+  transition: transform 0.2s ease;
+  
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.article-image-container {
+  position: relative;
+  width: 100%;
+  height: 120px;
+  overflow: hidden;
+}
+
+.article-thumbnail {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.category-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.article-content {
+  padding: 12px;
+  
+  .article-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 6px 0;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .article-date {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin: 0;
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .swiper-container {
+    padding: 12px;
+  }
+  
+  .category-slide {
+    width: 280px;
+  }
+  
+  .articles-swiper {
+    height: 200px;
+  }
+  
+  .article-slide {
+    width: 180px;
+    height: 180px;
+  }
+  
+  .article-image-container {
+    height: 100px;
+  }
+}
+
+// Animation pour les slides
+swiper-slide {
+  transition: transform 0.3s ease;
+}
+
+// Custom scrollbar pour les swipers
+swiper-container::part(scrollbar) {
+  --swiper-scrollbar-bottom: 0;
+  --swiper-scrollbar-size: 4px;
+  --swiper-scrollbar-border-radius: 2px;
+  --swiper-scrollbar-drag-bg-color: var(--primary-color);
 }

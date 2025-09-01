@@ -6,7 +6,8 @@ export interface Article {
   illustration_url: string;
   date_pub: string;
   auteur: any;
-  sous_categorie: number;
+  sous_categorie: any;
+  model3d_url?: string;
   like_count?: number;
 }
 
@@ -26,4 +27,9 @@ export interface SousCategorie {
 export interface CentreInteret {
   id: number;
   libelle: string;
+}
+
+export interface ArticlesBySousCategorie {
+  sousCategorie: SousCategorie;
+  articles:  Article [];
 }

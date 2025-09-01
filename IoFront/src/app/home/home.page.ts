@@ -3,7 +3,7 @@ import { Article } from '../models/article';
 import { ArticleService } from '../service/article-service';
 import { AuthService } from '../service/auth-service';
 import { LoadingController, ToastController } from '@ionic/angular';
-import { SousCategorie, Categorie, CentreInteret } from '../models/article';
+import { SousCategorie } from '../models/article';
 
 @Component({
   selector: 'app-home',

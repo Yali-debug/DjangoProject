@@ -9,9 +9,10 @@ import { RegisterData } from 'src/app/models/user';
   styleUrls: ['./login-page.page.scss'],
   standalone: false
 })
-export class LoginPagePage  {
+export class LoginPagePage implements OnInit {
   isRegisterMode = false;
   isLoading = false;
+  showSplash =true;
 
   loginCredentials = { 
     username: '', 
@@ -35,6 +36,11 @@ export class LoginPagePage  {
     private loadingCtrl: LoadingController,
     private toastCtrl: ToastController
   ) {}
+  ngOnInit () {
+    setTimeout(() => {
+      this.showSplash = false;
+    }, 2000);
+  }
 
   toggleAuthMode(event: any) {
     this.isRegisterMode = event.detail.value === 'register';

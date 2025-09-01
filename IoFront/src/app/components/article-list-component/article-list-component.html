@@ -7,16 +7,14 @@
     
     <ion-label>
       <h2>{{ article.titre }}</h2>
-      <p>{{ article.contenu | slice:0:100 }}...</p>
+      <p>{{ article.contenu | slice:0:50 }}...</p>
       <p>
         <small>
           Par {{ article.auteur?.prenom }} {{ article.auteur?.nom }} • 
           {{ article.date_pub | date:'dd/MM/yyyy à HH:mm' }}
         </small>
       </p>
-      <ion-badge *ngIf="article.sous_categorie" color="medium">
-        {{ getSousCategorieName(article.sous_categorie) }}
-      </ion-badge>
+        {{ article.sous_categorie.libelle}}
     </ion-label>
   </ion-item>
 </ion-list>

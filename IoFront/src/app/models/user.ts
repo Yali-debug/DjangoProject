@@ -1,3 +1,5 @@
+import { Article, SousCategorie } from "./article";
+
 export interface User {
   id: number;
   username: string;
@@ -26,4 +28,10 @@ export interface RegisterData {
 export interface AuthResponse {
   access: string;
   refresh: string;
+}
+
+// Nouvelle interface pour les articles groupés par sous-catégorie
+export interface ArticlesBySousCategorie {
+  sousCategorie: SousCategorie;
+  articles: Article[];
 }

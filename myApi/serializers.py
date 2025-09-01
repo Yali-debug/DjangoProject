@@ -79,9 +79,20 @@ class LikeSerializer(serializers.ModelSerializer):
         model = Like
         fields = '__all__'  # Serialize all fields of the Like model
 
+class SousCategorieSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the SousCategorie model.
+    This serializer converts SousCategorie instances to JSON and vice versa.
+    """
+    
+    class Meta:
+        model = SousCategorie
+        fields = '__all__'
+
 class ArticleSerializer(serializers.ModelSerializer):
     auteur = UtilisateurDetailSerializer(read_only = True)
     illustration_url = serializers.SerializerMethodField()
+    sous_categorie = SousCategorieSerializer(read_only= True)
 
     class Meta:
         model = Article
@@ -93,15 +104,6 @@ class ArticleSerializer(serializers.ModelSerializer):
             return request.build_absolute_uri(obj.illustration.url)
         return obj.illustration.url if obj.illustration else None
 
-class SousCategorieSerializer(serializers.ModelSerializer):
-    """
-    Serializer for the SousCategorie model.
-    This serializer converts SousCategorie instances to JSON and vice versa.
-    """
-    
-    class Meta:
-        model = SousCategorie
-        fields = '__all__'
 
 
 

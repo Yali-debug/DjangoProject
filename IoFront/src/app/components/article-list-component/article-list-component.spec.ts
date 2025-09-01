@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { ArticleListComponentComponent } from './article-list-component.component';
+import { ArticleListComponentComponent } from './article-list-component';
 
 describe('ArticleListComponentComponent', () => {
   let component: ArticleListComponentComponent;

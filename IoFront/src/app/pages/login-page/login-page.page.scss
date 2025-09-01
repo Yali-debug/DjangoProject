@@ -5,6 +5,20 @@
   justify-content: center;
   min-height: 100vh;
 }
+.animate-zoom-in {
+  animation: zoomInFade 0.7s ease-out;
+}
+
+@keyframes zoomInFade {
+  from {
+    opacity: 0;
+    transform: scale(0.9); /* plus petit */
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);   /* taille normale */
+  }
+}
 
 .login-container {
   width: 100%;
@@ -209,4 +223,47 @@ ion-item.item-has-focus {
   &:active:not([disabled]) {
     transform: scale(0.98);
   }
+}
+.splash-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--ion-color-primary); /* ou une couleur personnalisée */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  animation: fadeOut 0.5s ease-out forwards;
+  animation-delay: 2.0s; /* déclenche juste avant la disparition */
+  z-index: 9999;
+}
+
+.splash-logo {
+  font-size: 80px;
+  color: white;
+  animation: zoomIn 1s ease-out;
+}
+
+.splash-title {
+  color: white;
+  font-size: 28px;
+  margin-top: 10px;
+  font-weight: bold;
+  animation: fadeInUp 1.2s ease-out;
+}
+
+@keyframes zoomIn {
+  from { transform: scale(0.5); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+  to { opacity: 0; visibility: hidden; }
 }
