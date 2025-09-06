@@ -150,11 +150,21 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8100",
     "http://localhost:4200",
     "http://localhost:3000",
+    "capacitor://localhost",
+    "ionic://localhost",
 ]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = True
+# Configuration pour les requêtes mobiles
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8100',
+    'capacitor://localhost',
+    'ionic://localhost',
+]
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1), # Le token d'accès expire après 1 jour
