@@ -25,7 +25,7 @@ class SousCategorieViewSet(viewsets.ModelViewSet):
 
 class UtilisateurViewSet(viewsets.ModelViewSet):
     serializer_class = UtilisateurDetailSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     
     def get_queryset(self):
         # Les utilisateurs ne peuvent voir que leur propre profil en détail
@@ -44,9 +44,7 @@ class ArticleViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Article.objects.all().select_related (
             'auteur',
-            'auteur__user',
             'sous_categorie',
-            'sous_categorie__categorie'
         ).prefetch_related(
             'likes',
             'commentaires'

@@ -1,10 +1,13 @@
+import { authGuardGuard } from './guards/auth-guard-guard';
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { onboardingGuardGuard } from './guards/onboarding-guard-guard';
 
 const routes: Routes = [
   {
     path: 'home',
     loadChildren: () => import('./home/home.module').then( m => m.HomePageModule),
+     canActivate: [authGuardGuard]
   },
   {
     path: '',
@@ -18,7 +21,17 @@ const routes: Routes = [
   {
     path: '**',
     redirectTo: 'login'
+  },
+  {
+    path: 'centres-interet',
+    loadChildren: () => import('./pages/centres-interet/centres-interet.module').then( m => m.CentresInteretPageModule),
+    canActivate: [authGuardGuard, onboardingGuardGuard]
+  },
+  {
+    path: 'centres-interet',
+    loadChildren: () => import('./pages/centres-interet/centres-interet.module').then( m => m.CentresInteretPageModule)
   }
+
 ];
 
 @NgModule({

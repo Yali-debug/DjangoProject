@@ -50,6 +50,11 @@ class Article(models.Model):
     date_pub = models.DateTimeField(auto_now_add=True)
     auteur = models.ForeignKey(Utilisateur, on_delete=models.SET_NULL, null=True, blank=True)
     sous_categorie = models.ForeignKey(SousCategorie, on_delete=models.PROTECT, related_name="article")
+    modele_3d = models.FileField(
+        upload_to='models/',
+        null=True, blank=True,
+        help_text="Fichier 3D au format .glb ou .gltf"
+    )
     
     def __str__(self):
         return f"{self.titre} ({self.sous_categorie})"

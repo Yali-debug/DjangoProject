@@ -36,6 +36,8 @@ export class LoginPagePage implements OnInit {
     private loadingCtrl: LoadingController,
     private toastCtrl: ToastController
   ) {}
+
+
   ngOnInit () {
     setTimeout(() => {
       this.showSplash = false;
@@ -47,6 +49,7 @@ export class LoginPagePage implements OnInit {
   }
 
   async login() {
+
     this.isLoading = true;
     
     const loading = await this.loadingCtrl.create({
@@ -107,10 +110,14 @@ export class LoginPagePage implements OnInit {
       this.isLoading = false;
       
       this.showToast('Compte créé avec succès ! Vous pouvez vous connecter');
+      this.router.navigate(['/centres-interet']);
       
       // Revenir au mode login
+      /*
       this.isRegisterMode = false;
       this.resetRegisterForm();
+      */
+     
       
     } catch (error: any) {
       await loading.dismiss();

@@ -7,7 +7,6 @@
     <p class="article-content">{{ article.contenu }}</p>
     
     <ion-button *ngIf="article.like_count !== undefined" fill="clear" size="small">
-      <ion-icon name="heart-outline" slot="start"></ion-icon>
       {{ article.like_count }}
     </ion-button>
     <ion-badge *ngIf="article.sous_categorie" color="primary">

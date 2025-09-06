@@ -1,0 +1,57 @@
+<!-- centres-interet.page.html -->
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Choisissez vos centres d'intérêt</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="centres-interet-content">
+  <div class="container">
+    <div class="header">
+      <h2>Personnalisez votre expérience</h2>
+      <p>Sélectionnez les sujets qui vous intéressent pour voir du contenu personnalisé</p>
+    </div>
+
+    <div class="centres-list" *ngIf="!isLoading; else loadingTemplate">
+      <ion-list>
+        <ion-item 
+          *ngFor="let centre of centresInteret" 
+          (click)="toggleSelection(centre.id)"
+          [class.selected]="selectedCentres.has(centre.id)"
+          class="centre-item">
+          <ion-label>{{ centre.libelle }}</ion-label>
+          <ion-icon 
+            slot="end" 
+            [name]="selectedCentres.has(centre.id) ? 'checkmark-circle' : 'ellipse-outline'"
+            [color]="selectedCentres.has(centre.id) ? 'primary' : 'medium'">
+          </ion-icon>
+        </ion-item>
+      </ion-list>
+    </div>
+
+    <ng-template #loadingTemplate>
+      <div class="loading-spinner">
+        <ion-spinner></ion-spinner>
+        <p>Chargement des centres d'intérêt...</p>
+      </div>
+    </ng-template>
+
+    <div class="action-buttons" *ngIf="!isLoading">
+      <ion-button 
+        expand="block" 
+        shape="round" 
+        (click)="saveSelections()"
+        [disabled]="selectedCentres.size === 0">
+        Continuer vers l'accueil
+      </ion-button>
+      
+      <ion-button 
+        expand="block" 
+        fill="clear" 
+        (click)="saveSelections()"
+        *ngIf="selectedCentres.size === 0">
+        Passer cette étape
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

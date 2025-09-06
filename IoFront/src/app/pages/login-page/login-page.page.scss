@@ -236,7 +236,7 @@ ion-item.item-has-focus {
   justify-content: center;
   align-items: center;
   animation: fadeOut 0.5s ease-out forwards;
-  animation-delay: 2.0s; /* déclenche juste avant la disparition */
+  animation-delay: 4.0s; /* déclenche juste avant la disparition */
   z-index: 9999;
 }
 

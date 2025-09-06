@@ -25,12 +25,11 @@
     "@ionic/angular": "^8.0.0",
     "@ionic/cordova-builders": "^12.3.0",
     "@ionic/storage-angular": "^4.0.0",
-    "@types/three": "^0.179.0",
     "ionicons": "^7.0.0",
     "jwt-decode": "^4.0.0",
     "rxjs": "~7.8.0",
     "swiper": "^11.2.10",
-    "three": "^0.172.0",
+    "three-stdlib": "^2.36.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
   },
@@ -46,6 +45,7 @@
     "@angular/language-service": "^20.0.0",
     "@ionic/angular-toolkit": "^12.0.0",
     "@types/jasmine": "~5.1.0",
+    "@types/three": "^0.179.0",
     "@typescript-eslint/eslint-plugin": "^8.18.0",
     "@typescript-eslint/parser": "^8.18.0",
     "eslint": "^9.16.0",
@@ -59,6 +59,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "three": "^0.179.1",
     "typescript": "~5.8.0"
   },
   "description": "An Ionic project"

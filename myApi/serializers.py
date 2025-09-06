@@ -93,16 +93,22 @@ class ArticleSerializer(serializers.ModelSerializer):
     auteur = UtilisateurDetailSerializer(read_only = True)
     illustration_url = serializers.SerializerMethodField()
     sous_categorie = SousCategorieSerializer(read_only= True)
+    modele_3d_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Article
-        fields = ['id', 'titre', 'contenu', 'illustration', 'illustration_url', 'date_pub', 'auteur', 'sous_categorie']
+        fields = ['id', 'titre', 'contenu', 'illustration', 'illustration_url', 'date_pub', 'modele_3d_url','auteur', 'sous_categorie']
         
     def get_illustration_url(self, obj):
         request = self.context.get('request')
         if obj.illustration and request:
             return request.build_absolute_uri(obj.illustration.url)
         return obj.illustration.url if obj.illustration else None
+    
+    
+    def get_modele_3d_url(self, obj):
+        request = self.context.get('request')
+        return request.build_absolute_uri(obj.modele_3d.url) if obj.modele_3d else None
 
 
 

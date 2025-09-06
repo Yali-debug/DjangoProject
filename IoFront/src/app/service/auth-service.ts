@@ -5,122 +5,126 @@ import { User, LoginData, AuthResponse, RegisterData} from '../models/user';
 import { HttpClient } from '@angular/common/http';
 import { Storage } from '@ionic/storage-angular';
 import { Router } from '@angular/router';
-
+import { jwtDecode } from 'jwt-decode';
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private apiUrl = environment.apiURL;
-  private tokenKey = 'access-token';
-  private refreshTokenKey = 'refresh-token';
-  private currentUser = new BehaviorSubject<User | null> (null);
-  
-  private isAuthenticated = new BehaviorSubject<boolean>(false);
+  public apiUrl = environment.apiURL;
+  private currentUserSubject = new BehaviorSubject<User | null>(null);
+  public currentUser$ = this.currentUserSubject.asObservable();
+  private isNewUserSubject = new BehaviorSubject<boolean>(false);
+  public isNewUser$ = this.isNewUserSubject.asObservable();
 
-  constructor (
+
+  constructor(
     private http: HttpClient,
-    private storage : Storage,
     private router: Router
   ) {
-    this.initStorage();
+    this.loadToken();
   }
-
-  async initStorage () {
-    await this.storage.create();
-    await this.loadStoredToken();
-  }
-
-  private async loadStoredToken() {
-    const token = await this.getAccessToken();
-    if (token) {
-      // CORRECTION : Utiliser la variable token correctement
-      this.isAuthenticated.next(!!token);
-      await this.loadUserProfile();
-    } else {
-      this.isAuthenticated.next(false);
-    }
-  }
-
-
 
   login(credentials: LoginData): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/token/`, credentials).pipe(
-      tap(async (response: AuthResponse) => {
-        await this.storage.set(this.tokenKey, response.access);
-        await this.storage.set(this.refreshTokenKey, response.refresh);
-        await this.loadUserProfile();
-        this.isAuthenticated.next(true);
+      tap(response => {
+        this.setToken(response.access);
+        // Charger les informations utilisateur après le login
+        this.loadUserInfo();
       })
     );
   }
 
   register(userData: RegisterData): Observable<any> {
-    return this.http.post(`${this.apiUrl}/register/`, userData);
-  }
-
-  async loadUserProfile(): Promise<void> {
-    try {
-      // Utilisez toPromise() avec await et vérifiez le résultat
-      const userProfile = await this.http.get<User>(`${this.apiUrl}/utilisateur/me/`).toPromise();
-      
-      // Vérification explicite pour éviter undefined
-      if (userProfile) {
-        this.currentUser.next(userProfile);
-      } else {
-        console.error('User profile is undefined');
-        this.currentUser.next(null);
-      }
-    } catch (error) {
-      console.error('Error loading user profile:', error);
-      this.currentUser.next(null); // Explicitement mettre à null
-      await this.logout();
-    }
-  }
-
-  async getAccessToken(): Promise<string | null> {
-    return await this.storage.get(this.tokenKey);
-  }
-
-  async getRefreshToken(): Promise<string | null> {
-    return await this.storage.get(this.refreshTokenKey);
-  }
-
-  isLoggedIn(): Observable<boolean> {
-    return this.isAuthenticated.asObservable();
-  }
-  async logout(): Promise<void> {
-    await this.storage.remove(this.tokenKey);
-    await this.storage.remove(this.refreshTokenKey);
-    this.currentUser.next(null);
-    this.isAuthenticated.next(false);
-    this.router.navigate(['/login']);
+    return this.http.post(`${this.apiUrl}/register/`, userData).pipe(
+      tap((response: any) => {
+        if (response.token) {
+          this.setToken(response.token);
+          this.loadUserInfo();
+          this.markAsNewUser(); // Marquer comme nouvel utilisateur
+        } else if (response.access) {
+          this.setToken(response.access);
+          this.loadUserInfo();
+          this.markAsNewUser(); /// Marquer comme nouvel utilisateur
+        }
+      })
+    );
   }
   
-  getCurrentUser(): Observable<User | null> {
-    return this.currentUser.asObservable();
+  setToken(token: string): void {
+    localStorage.setItem('auth_token', token);
   }
 
+  getToken(): string | null {
+    return localStorage.getItem('auth_token');
+  }
 
-  async refreshToken(): Promise<string | null> {
-    const refreshToken = await this.getRefreshToken();
-    if (!refreshToken) return null;
+  getCurrentUser(): User | null {
+    return this.currentUserSubject.value;
+  }
+
+  getCurrentUserId(): number | null {
+    return this.currentUserSubject.value?.id || null;
+  }
+
+  isAuthenticated(): boolean {
+    const token = this.getToken();
+    if (!token) return false;
 
     try {
-      const response: any = await this.http.post(`${this.apiUrl}/token/refresh/`, {
-        refresh: refreshToken
-      }).toPromise();
-
-      await this.storage.set('access_token', response.access);
-      return response.access;
+      const decoded: any = jwtDecode(token);
+      const currentTime = Date.now() / 1000;
+      return decoded.exp > currentTime;
     } catch (error) {
-      await this.logout();
-      return null;
+      return false;
     }
   }
 
-   // Méthode utilitaire pour vérifier l'état d'authentification (synchrone)
-  isAuthenticatedSync(): boolean {
-    return this.isAuthenticated.value;
+  logout(): void {
+    localStorage.removeItem('auth_token');
+    this.currentUserSubject.next(null);
+    this.router.navigate(['/login']);
   }
+
+  private loadToken(): void {
+    const token = this.getToken();
+    if (token && this.isAuthenticated()) {
+      this.loadUserInfo();
+    }
+  }
+
+  private loadUserInfo(): void {
+    // Implémentez cette méthode pour charger les informations utilisateur
+    // depuis votre API après l'authentification
+    this.http.get<User>(`${this.apiUrl}/utilisateur/`).subscribe({
+      next: (user) => {
+        this.currentUserSubject.next(user);
+      },
+      error: (error) => {
+        console.error('Error loading user info:', error);
+        this.logout();
+      }
+    });
+  }
+
+  completeOnboarding(): void {
+    this.isNewUserSubject.next(false);
+  }
+
+  // Méthode pour vérifier si c'est un nouvel utilisateur
+  isNewUser(): boolean {
+    return this.isNewUserSubject.value;
+  }
+
+  // Méthode pour marquer comme nouvel utilisateur
+  markAsNewUser(): void {
+    this.isNewUserSubject.next(true);
+  }
+
+
+
+
+
+
+  
 }
